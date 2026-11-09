@@ -3,6 +3,8 @@ import { api, HydrateClient } from "@/trpc/server";
 import { TaskList } from "@/app/_components/task-list/task-list-component";
 
 export default async function Home() {
+  // Prefetch the first page of tasks to improve perceived performance.
+  // This is the Server Component equivalent of the `useQuery` hook in a Client Component. (SSR)
   await api.task.list.prefetchInfinite({ ascending: false });
 
   return (

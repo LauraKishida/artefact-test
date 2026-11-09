@@ -11,7 +11,7 @@ const PAGE_SIZE = 10;
 const randomPastDate = (daysBack = 30): Date =>
   new Date(Date.now() - Math.random() * daysBack * 24 * 60 * 60 * 1000);
 
-// Seed with sample tasks
+// MOCK : Seeds the "database with sample tasks"
 const seedTasks: Omit<Task, "id">[] = [
   {
     title: "Have a blood test",
@@ -99,10 +99,13 @@ const createSeededTasks = (): Map<string, Task> => {
   return store;
 };
 
+// Database is stored in a global variable to persist across hot reloads in development.
+// This is not a production-ready solution, but it works for this example.
+// Improving it would require a proper database or persistent storage solution.
+// Appropriate queries would also be very different if we were using a real database, but the API would remain the same.
 const globalStore = globalThis as typeof globalThis & {
   __tasks?: Map<string, Task>;
 };
-
 const tasks = (globalStore.__tasks ??= createSeededTasks());
 
 export const taskRouter = createTRPCRouter({

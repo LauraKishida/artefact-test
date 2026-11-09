@@ -24,6 +24,22 @@ Developed by **Laura Kishida**.
 - Toast notifications that persist across navigation
 - In-memory task store seeded with 15 sample tasks
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18.17+ or 20+
+- `npm`, `pnpm`, or `yarn`
+
+### Install & Run
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
 ## Key Files
 
 ### Data & API
@@ -49,29 +65,32 @@ Developed by **Laura Kishida**.
 - `/tasks/new` — create task page.
 - `/tasks/[id]` — edit task page.
 
-## Getting Started
+## Author commentaries
 
-### Prerequisites
+This app was developed with the constraints determined by the Artefact technical case. In this section, I comment a bit about my design choices and why some implementations are as they are.
 
-- Node.js 18.17+ or 20+
-- `npm`, `pnpm`, or `yarn`
+### Back end
 
-### Install & Run
+The current implementation uses a Map with an UUID as a key and the task data as its value. (`src/server/api/routers/task.ts`)
 
-```bash
-npm install
-npm run dev
-```
+A real implementation would require authentication for data security and a database for persistence between deployments. Also, many optimizations in the back-end would be necessary since the database can get quite large.
 
-Open [http://localhost:3000](http://localhost:3000).
+The implementation of the database would change the logic inside the endpoints, but their functionality would remain mostly the same (despite some optimizations in the pagination).
 
-## Highlights
+### Front end
 
-- **End-to-end type safety** through shared Zod schemas and tRPC.
-- **Fast initial rendering** via server-side prefetching and hydration.
-- **Smooth UX** with infinite scrolling and non-intrusive toast notifications.
+This is the part I spent most of the time developing. I decided to create a very subdivided approach, where I have some components I broke down. For example, I created the components in `task-list/` just to improve readability in the home page. I don't like writing front end code with super nested files and long pages with multiple callback functions and hooks, so I figured this was more appropriate.
+
+I also broke down some components that are common into some pages, like the `task-form-component.tsx` that appears in the edit task and new task page. This avoids redundancy.
+
+Finally, I prioritized user experience by reducing interactivity in some edge cases (for example, when the user tries to click the task after they have deleted it). By adding some loading states, this avoids some pesky users into getting stuck onto some weird pages -- although I also implemented some error messages in case that happened.
 
 ## Next Steps
+
+### Authentication
+
+- Create method to make tasks private and only accessible by each user with an adequate login method
+- Use tokens to check current user and authentication for each information/request.
 
 ### Front End
 
