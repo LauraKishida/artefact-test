@@ -1,29 +1,84 @@
-# Create T3 App
+# Task-Efact
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern full-stack task management app built for the **Artefact** evaluation project. It demonstrates end-to-end type safety, server-side prefetching, infinite scrolling, responsive design, and toast notifications.
 
-## What's next? How do I make an app with this?
+Developed by **Laura Kishida**.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Tech Stack
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- **Next.js 15** (App Router, React 19)
+- **tRPC v11**
+- **Zod 3**
+- **TanStack React Query v5**
+- **Zustand 5**
+- **Tailwind CSS v4**
+- **TypeScript 5**
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Features
 
-## Learn More
+- Create, edit, and delete tasks
+- UUID-based task IDs and Zod validation
+- Cursor-paginated task list with newest/oldest sorting
+- Infinite scrolling
+- Server-prefetched homepage with Suspense hydration
+- Toast notifications that persist across navigation
+- In-memory task store seeded with 15 sample tasks
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Key Files
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### Data & API
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+- `src/schemas/task_schema.ts` — Zod schema for tasks: UUID `id`, 1–200 char `title`, `creationDate`, optional `description`.
+- `src/server/api/routers/task.ts` — tRPC task router with an in-memory global store.
+  - `create`: creates a task with UUID and timestamp.
+  - `byId`: returns a task or `NOT_FOUND`.
+  - `list`: cursor-paginated pages of 10, supports ascending/descending order.
+  - `update`: updates title/description; requires at least one field.
+  - `delete`: removes a task or throws `NOT_FOUND`.
 
-## How do I deploy this?
+### Frontend
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+- `task-form-component.tsx` — shared create/edit form; supports delete in edit mode, cache invalidation, loading states, and flash notifications.
+- `task-list/` — infinite-scrolling task list with sort toggle, task cards, delete action, and notification handling.
+- `popup-token-component.tsx` — animated toast/banner component with success/warning/error/info types, auto-dismiss, and manual close.
+- `store/popup-store.ts` — Zustand store for cross-page notifications.
+
+### Pages
+
+- `/` — prefetches the first task page and renders the list with Suspense.
+- `/tasks/new` — create task page.
+- `/tasks/[id]` — edit task page.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18.17+ or 20+
+- `npm`, `pnpm`, or `yarn`
+
+### Install & Run
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Highlights
+
+- **End-to-end type safety** through shared Zod schemas and tRPC.
+- **Fast initial rendering** via server-side prefetching and hydration.
+- **Smooth UX** with infinite scrolling and non-intrusive toast notifications.
+
+## Next Steps
+
+### Front End
+
+- Standardize and create atomized components (buttons, forms, etc.)
+- Improve styling and visual consistency
+
+### Back End
+
+- Implement a persistent backend
+- Improve queries with optimization and appropriate pagination
